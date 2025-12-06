@@ -37,6 +37,8 @@ model Item {
   description    String?
   basePrice      Float
   currentPrice   Float
+  rating         Float            @default(0)
+  ratingCount    Int              @default(0)
   views          Int              @default(0)
   cartAdds       Int              @default(0)
   seller         User             @relation("SellerItems", fields: [sellerId], references: [id])

@@ -1,19 +1,41 @@
 import prisma from '../config/prismaClient.js';
 import { handleInventoryChange, handleItemView } from './pricingService.js';
 
-export const listItems = async ({ page = 1, pageSize = 50 } = {}) => {
+export const listItems = async ({
+  page = 1,
+  pageSize = 50,
+  minPrice,
+  maxPrice,
+  search,
+} = {}) => {
   const take = Math.min(Math.max(Number(pageSize) || 50, 1), 100);
   const currentPage = Math.max(Number(page) || 1, 1);
   const skip = (currentPage - 1) * take;
+
+  const where = {
+    AND: [
+      minPrice ? { currentPrice: { gte: Number(minPrice) } } : undefined,
+      maxPrice ? { currentPrice: { lte: Number(maxPrice) } } : undefined,
+      search
+        ? {
+            OR: [
+              { title: { contains: search, mode: 'insensitive' } },
+              { description: { contains: search, mode: 'insensitive' } },
+            ],
+          }
+        : undefined,
+    ].filter(Boolean),
+  };
 
   const [items, total] = await Promise.all([
     prisma.item.findMany({
       include: { inventory: true },
       orderBy: { createdAt: 'desc' },
+      where,
       skip,
       take,
     }),
-    prisma.item.count(),
+    prisma.item.count({ where }),
   ]);
 
   // Optional: trigger view-based pricing on the current page only

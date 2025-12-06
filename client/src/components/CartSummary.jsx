@@ -11,7 +11,7 @@ const CartSummary = ({ cart, onRemove }) => (
             <p className="text-sm text-slate-500">
               {item.quantity}
               {' '}
-              × $
+              × ₹
               {item.item.currentPrice.toFixed(2)}
             </p>
           </div>
@@ -28,7 +28,7 @@ const CartSummary = ({ cart, onRemove }) => (
     <div className="mt-6 text-right">
       <p className="text-sm text-slate-500">Subtotal</p>
       <strong className="text-2xl font-semibold text-slate-900">
-        $
+        ₹
         {(cart?.total || 0).toFixed(2)}
       </strong>
     </div>

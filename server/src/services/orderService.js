@@ -29,6 +29,7 @@ export const checkout = async (userId) => {
 
   const orderItems = cart.cartItems.map((ci) => ({
     itemId: ci.itemId,
+    title: ci.item.title,
     quantity: ci.quantity,
     price: ci.item.currentPrice,
   }));
@@ -68,3 +69,9 @@ export const checkout = async (userId) => {
     cart: await getCart(userId),
   };
 };
+
+export const getOrdersForUser = (userId) =>
+  prisma.order.findMany({
+    where: { userId },
+    orderBy: { createdAt: 'desc' },
+  });

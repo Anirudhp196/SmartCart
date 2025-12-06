@@ -8,7 +8,7 @@ const ItemGrid = ({ items, onAddToCart, onSelect }) => (
         </div>
         <div className="flex items-center justify-between">
           <strong className="text-xl text-slate-900">
-            $
+            ₹
             {item.currentPrice?.toFixed(2)}
           </strong>
           <span className="text-sm text-slate-500">

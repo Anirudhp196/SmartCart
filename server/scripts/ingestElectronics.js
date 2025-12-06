@@ -19,11 +19,6 @@ const cleanupPrice = (value) => {
   return price > 0 ? price : null;
 };
 
-const convertToUsd = (priceInInr) => {
-  if (!priceInInr || Number.isNaN(priceInInr)) return null;
-  return Math.round((priceInInr / 90) * 100) / 100;
-};
-
 const deriveInventory = (ratingCount) => {
   const qty = Math.max(5, Math.min(500, Math.round(ratingCount / 50)));
   return qty || 20;
@@ -75,12 +70,14 @@ const main = async () => {
     }
 
     // CSV columns: discount_price (current) and actual_price (original)
-    const inrPrice = cleanupPrice(row.discount_price) || cleanupPrice(row.actual_price);
-    const price = convertToUsd(inrPrice);
+    const price = cleanupPrice(row.discount_price) || cleanupPrice(row.actual_price);
     if (!price) {
       skippedMissingPrice += 1;
       continue;
     }
+
+  const rating = Number(row.ratings) || 0;
+  const ratingCount = cleanupNumber(row.no_of_ratings);
 
     const existing = await prisma.item.findFirst({ where: { title } });
     if (existing) {
@@ -97,6 +94,8 @@ const main = async () => {
         description: `${row.main_category || ''} | ${row.sub_category || ''}`.trim(),
         basePrice: price,
         currentPrice: price,
+        rating,
+        ratingCount,
         sellerId: seller.id,
         views: demandProxy,
         inventory: {

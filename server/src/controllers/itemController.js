@@ -10,7 +10,15 @@ export const getItems = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page, 10) || 1;
     const pageSize = parseInt(req.query.pageSize, 10) || 50;
-    const result = await listItems({ page, pageSize });
+    const { minPrice, maxPrice, search } = req.query;
+
+    const result = await listItems({
+      page,
+      pageSize,
+      minPrice,
+      maxPrice,
+      search,
+    });
     res.json(result);
   } catch (error) {
     next(error);

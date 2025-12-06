@@ -59,7 +59,7 @@ const ProductDetails = () => {
         </div>
         <div className="flex flex-wrap items-center justify-between gap-4">
           <strong className="text-4xl font-semibold text-slate-900">
-            $
+            ₹
             {item.currentPrice.toFixed(2)}
           </strong>
           <button

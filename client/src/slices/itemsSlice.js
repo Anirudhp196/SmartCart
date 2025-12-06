@@ -9,7 +9,7 @@ import { addItemToCart } from './cartSlice.js';
 
 export const fetchItems = createAsyncThunk(
   'items/fetchAll',
-  async ({ page = 1, pageSize = 50 } = {}) => fetchItemsApi({ page, pageSize }),
+  async (params = {}) => fetchItemsApi(params),
 );
 export const createNewItem = createAsyncThunk('items/create', async (payload) => createItemApi(payload));
 export const updateExistingItem = createAsyncThunk(

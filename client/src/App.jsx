@@ -7,6 +7,7 @@ import Checkout from './pages/Checkout.jsx';
 import SellerDashboard from './pages/SellerDashboard.jsx';
 import SellerItems from './pages/SellerItems.jsx';
 import SellerAnalytics from './pages/SellerAnalytics.jsx';
+import Orders from './pages/Orders.jsx';
 
 const App = () => (
   <div className="min-h-screen bg-slate-100 text-slate-900">
@@ -16,6 +17,7 @@ const App = () => (
       <Route path="/products/:id" element={<ProductDetails />} />
       <Route path="/cart" element={<Cart />} />
       <Route path="/checkout" element={<Checkout />} />
+      <Route path="/orders" element={<Orders />} />
       <Route path="/seller/dashboard" element={<SellerDashboard />} />
       <Route path="/seller/items" element={<SellerItems />} />
       <Route path="/seller/analytics" element={<SellerAnalytics />} />

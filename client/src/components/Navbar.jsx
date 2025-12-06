@@ -20,6 +20,9 @@ const Navbar = () => (
         <NavLink to="/checkout" className={linkClasses}>
           Checkout
         </NavLink>
+        <NavLink to="/orders" className={linkClasses}>
+          Orders
+        </NavLink>
         <NavLink to="/seller/dashboard" className={linkClasses}>
           Seller
         </NavLink>
