@@ -9,6 +9,7 @@ import cartRoutes from './routes/cartRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import pricingRoutes from './routes/pricingRoutes.js';
 import { notFoundHandler, errorHandler } from './middleware/errorHandler.js';
+import { startPriceDecayScheduler } from './services/pricingService.js';
 
 dotenv.config();
 
@@ -30,5 +31,8 @@ app.use('/pricing', pricingRoutes);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
+
+// Background price decay scheduler (idle price easing)
+startPriceDecayScheduler();
 
 export default app;

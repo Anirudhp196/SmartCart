@@ -23,7 +23,7 @@ export const checkout = async (userId) => {
   }
 
   const total = cart.cartItems.reduce(
-    (sum, ci) => sum + ci.item.currentPrice * ci.quantity,
+    (sum, ci) => sum + (ci.lockedPrice ?? ci.item.currentPrice) * ci.quantity,
     0,
   );
 
@@ -31,7 +31,7 @@ export const checkout = async (userId) => {
     itemId: ci.itemId,
     title: ci.item.title,
     quantity: ci.quantity,
-    price: ci.item.currentPrice,
+    price: ci.lockedPrice ?? ci.item.currentPrice,
   }));
 
   const order = await prisma.$transaction(async (tx) => {

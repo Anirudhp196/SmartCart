@@ -23,7 +23,7 @@ const SellerAnalytics = () => {
       </p>
       <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {items.slice(0, 3).map((item) => (
-          <PriceHistoryCard key={item.id} history={histories[item.id] || []} />
+          <PriceHistoryCard key={item.id} history={histories[item.id] || []} title={item.title} />
         ))}
       </div>
     </main>

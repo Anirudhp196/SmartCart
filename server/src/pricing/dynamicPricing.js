@@ -1,7 +1,8 @@
 import prisma from '../config/prismaClient.js';
 
-const MIN_MULTIPLIER = 0.85;
-const MAX_MULTIPLIER = 1.35;
+// Constrain movement: floor at 95% of base, cap at 150%
+const MIN_MULTIPLIER = 0.95;
+const MAX_MULTIPLIER = 1.3;
 
 const roundToCents = (value) => Math.round(value * 100) / 100;
 
@@ -11,19 +12,15 @@ const clampPrice = (price, basePrice) => {
   return Math.min(Math.max(price, min), max);
 };
 
-/**
- * Core pricing function requested in the spec. The four parameters below fully
- * determine the adjustment before persistence occurs.
- */
 export const calculateDynamicPrice = (
   currentPrice,
   inventoryLevel,
   demandScore,
   timeFactor,
 ) => {
-  const demandInfluence = 0.05 * demandScore;
-  const inventoryInfluence = inventoryLevel <= 0 ? 0.08 : -0.03 * Math.log10(inventoryLevel + 1);
-  const temporalInfluence = 0.02 * timeFactor;
+  const demandInfluence = 0.08 * demandScore;
+  const inventoryInfluence = inventoryLevel <= 0 ? 0.12 : -0.05 * Math.log10(inventoryLevel + 1);
+  const temporalInfluence = 0.01 * timeFactor;
 
   const multiplier = 1 + demandInfluence + inventoryInfluence + temporalInfluence;
   const tentativePrice = currentPrice * multiplier;
@@ -32,10 +29,10 @@ export const calculateDynamicPrice = (
 
 const deriveTimeFactor = () => {
   const hour = new Date().getHours();
-  if (hour >= 18 && hour <= 22) return 1; // evening rush
-  if (hour >= 9 && hour <= 11) return 0.4; // late morning
-  if (hour >= 0 && hour <= 5) return -0.6; // off-hours
-  return 0;
+  if (hour >= 18 && hour <= 22) return 0.3; // evening time
+  if (hour >= 9 && hour <= 11) return 0.1; // later morning - noon time
+  if (hour >= 0 && hour <= 5) return -0.2; // AM times when no one shops
+  return 0; 
 };
 
 export const applyDynamicPricing = async ({

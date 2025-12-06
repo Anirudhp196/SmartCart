@@ -7,6 +7,7 @@ export const listItems = async ({
   minPrice,
   maxPrice,
   search,
+  trackViews = true,
 } = {}) => {
   const take = Math.min(Math.max(Number(pageSize) || 50, 1), 100);
   const currentPage = Math.max(Number(page) || 1, 1);
@@ -39,7 +40,9 @@ export const listItems = async ({
   ]);
 
   // Optional: trigger view-based pricing on the current page only
-  await Promise.all(items.map((item) => handleItemView(item.id)));
+  if (trackViews) {
+    await Promise.all(items.map((item) => handleItemView(item.id)));
+  }
 
   return {
     items,
@@ -100,7 +103,13 @@ export const updateItem = async (itemId, data) => {
   return item;
 };
 
-export const deleteItem = (itemId) => prisma.item.delete({ where: { id: itemId } });
+export const deleteItem = async (itemId) =>
+  prisma.$transaction(async (tx) => {
+    await tx.cartItem.deleteMany({ where: { itemId } });
+    await tx.pricingHistory.deleteMany({ where: { itemId } });
+    await tx.inventory.deleteMany({ where: { itemId } });
+    return tx.item.delete({ where: { id: itemId } });
+  });
 
 export const getItemById = (itemId) =>
   prisma.item.findUnique({ where: { id: itemId }, include: { inventory: true } });

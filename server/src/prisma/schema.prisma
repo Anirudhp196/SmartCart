@@ -73,6 +73,7 @@ model CartItem {
   cartId    String
   item      Item     @relation(fields: [itemId], references: [id])
   itemId    String
+  lockedPrice Float?
   quantity  Int      @default(1)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

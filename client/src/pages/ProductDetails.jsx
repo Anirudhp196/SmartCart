@@ -5,6 +5,7 @@ import PriceHistoryCard from '../components/PriceHistoryCard.jsx';
 import { fetchPricingHistory, fetchPricingInsight } from '../slices/pricingSlice.js';
 import { addItemToCart } from '../slices/cartSlice.js';
 import { fetchItems } from '../slices/itemsSlice.js';
+import { pingItemView } from '../api/items.js';
 import Toast from '../components/Toast.jsx';
 
 const ProductDetails = () => {
@@ -26,6 +27,8 @@ const ProductDetails = () => {
 
   useEffect(() => {
     if (id) {
+      // Register a detailed view to drive dynamic pricing
+      pingItemView(id).catch(() => {});
       dispatch(fetchPricingHistory(id));
       dispatch(fetchPricingInsight(id));
     }

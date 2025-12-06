@@ -19,7 +19,13 @@ const getOrCreateCart = async (userId) => {
 
 export const getCart = async (userId) => {
   await getOrCreateCart(userId);
-  return prisma.cart.findUnique({ where: { userId }, include: cartInclude });
+  const cart = await prisma.cart.findUnique({ where: { userId }, include: cartInclude });
+  if (!cart) return cart;
+  const total = cart.cartItems.reduce(
+    (sum, ci) => sum + (ci.lockedPrice ?? ci.item.currentPrice) * ci.quantity,
+    0,
+  );
+  return { ...cart, total };
 };
 
 export const addToCart = async ({ userId, itemId, quantity }) => {
@@ -48,6 +54,7 @@ export const addToCart = async ({ userId, itemId, quantity }) => {
       cartId: cart.id,
       itemId,
       quantity: normalizedQuantity,
+      lockedPrice: item.currentPrice,
     },
     update: {
       quantity: { increment: normalizedQuantity },
