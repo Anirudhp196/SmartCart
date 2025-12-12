@@ -69,7 +69,6 @@ const main = async () => {
       continue;
     }
 
-    // CSV columns: discount_price (current) and actual_price (original)
     const price = cleanupPrice(row.discount_price) || cleanupPrice(row.actual_price);
     if (!price) {
       skippedMissingPrice += 1;

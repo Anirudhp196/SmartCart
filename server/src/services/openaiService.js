@@ -1,26 +1,29 @@
-import OpenAI from 'openai';
+/**
+ * Stubbed pricing insight service.
+ * The original OpenAI-backed implementation was removed; this keeps the
+ * controller working and returns a basic heuristic suggestion.
+ */
+export const getPricingInsight = async ({ title, demandScore, recentPrices }) => {
+  const latestPrice = recentPrices?.[0];
+  const avgRecent = recentPrices?.length
+    ? recentPrices.reduce((sum, p) => sum + p, 0) / recentPrices.length
+    : null;
 
-const apiKey = process.env.OPENAI_API_KEY;
-let client = null;
-
-if (apiKey) {
-  client = new OpenAI({ apiKey });
-}
-
-export const getPricingInsight = async (productData) => {
-  if (!client) {
-    return {
-      headline: 'Increase urgency messaging',
-      recommendation: 'Limited-time bundles often uplift conversions ~8%.',
-      rationale: 'Mock insight: demand is steady but inventory falling; consider nudging buyers.',
-    };
+  let suggestion = 'Maintain current price while monitoring demand.';
+  if (typeof demandScore === 'number' && typeof latestPrice === 'number' && typeof avgRecent === 'number') {
+    if (demandScore > 50 && latestPrice <= avgRecent) {
+      suggestion = 'Demand trending up; consider a small price increase.';
+    } else if (demandScore < 10 && latestPrice >= avgRecent) {
+      suggestion = 'Demand softening; consider a modest price decrease.';
+    }
   }
 
-  // TODO: Replace with a real OpenAI call (e.g., responses.create) once the API key is provisioned.
-  const summary = `Price ${productData?.title || 'item'} based on demand level ${productData?.demandScore ?? 'n/a'}.`;
   return {
-    headline: 'AI Pricing Insight',
-    recommendation: summary,
-    rationale: 'This is a placeholder insight until OpenAI integration is finalized.',
+    title,
+    demandScore,
+    recentPrices,
+    aiEnabled: false,
+    summary: 'AI insights disabled; using basic heuristic.',
+    suggestion,
   };
 };

@@ -5,7 +5,6 @@ import { createNewItem, fetchItems, removeItem } from '../slices/itemsSlice.js';
 const SellerItems = () => {
   const dispatch = useDispatch();
   const { items } = useSelector((state) => state.items);
-  const user = useSelector((state) => state.auth.user);
   const [form, setForm] = useState({
     title: '',
     description: '',
